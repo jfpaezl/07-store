@@ -57,4 +57,6 @@ export default async function seed() {
 			queries.push(db.insert(ProductImage).values(image));
 		});
 	});
+
+	await db.batch(queries)
 }
