@@ -1,13 +1,13 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import '@/styles/global.css';
-import { actions } from 'astro:actions';
+import {actions} from 'astro:actions';
+// de la linea 6 a la 10 se genera el errror
+const {data:products, error} = await actions.getProductsByPage({});
 
-// const {data:products, error} = await actions.getProductsByPage.safe({})
-
-// if (error){
-//   return Astro.redirect('/')
-// }
+if (error){
+  return Astro.redirect('/')
+}
 ---
 
 <MainLayout>
