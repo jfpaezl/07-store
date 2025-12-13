@@ -2,6 +2,9 @@
 import { z } from 'astro:schema';
 import { defineAction } from 'astro:actions'
 import { count, db, eq, Product, ProductImage, sql } from 'astro:db';
+import type { ProductWithImages } from '@/interfaces';
+import type { P } from 'node_modules/tailwindcss/dist/resolve-config-QUZ9b-Gn.d.mts';
+
 
 export const getProductsByPage = defineAction({
     accept: 'json',
@@ -16,7 +19,7 @@ export const getProductsByPage = defineAction({
 
         if (page > totalPages) {
             return {
-                products: [],
+                products: [] as ProductWithImages[],
                 totalPages: totalPages
             }
         }
@@ -40,7 +43,7 @@ export const getProductsByPage = defineAction({
         //     .offset((page - 1) * 12)
 
         return {
-            // products: products,
+            products: rows as unknown as ProductWithImages[],
             totalPages: totalPages
         }
     }
