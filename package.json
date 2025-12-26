@@ -12,19 +12,24 @@
     "@astrojs/db": "^0.18.0",
     "@astrojs/netlify": "^6.5.13",
     "@astrojs/react": "^4.4.2",
+    "@nanostores/react": "^1.0.0",
     "@tailwindcss/vite": "^4.1.15",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.15.8",
     "auth-astro": "^4.2.0",
     "bcryptjs": "^3.0.2",
+    "js-cookie": "^3.0.5",
+    "nanostores": "^1.1.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "sweetalert2": "^11.26.3",
+    "swiper": "^12.0.3",
     "tailwindcss": "^4.1.15",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/uuid": "^11.0.0"
   }
 }

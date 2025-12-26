@@ -14,7 +14,7 @@ const path = url.pathname;
 <div class="contendPagination">
     <a href={`${path}?page=${Math.max(currentPage - 1,1)}`} class="button">Ateriores</a>
     <span>Página {pageParam} de {totalPages}</span>
-    <a href={`${path}?page=${Math.min(currentPage + 1,1)}`}  class="button">Sigientes</a>
+    <a href={`${path}?page=${Math.max(currentPage + 1,1)}`}  class="button">Sigientes</a>
 </div>
 
 <style>

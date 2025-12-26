@@ -4,15 +4,23 @@ import Pagination from '@/components/shared/Pagination.astro';
 import MainLayout from '@/layouts/MainLayout.astro';
 import '@/styles/global.css';
 import {actions} from 'astro:actions';
-// de la linea 6 a la 10 se genera el errror
-const {data, error} = await Astro.callAction(actions.getProductsByPage, ({}) );
+
+
+const searchParams = Astro.url.searchParams;
+const pageParam = Number(searchParams.get('page')) ?? 1;
+
+const {data, error} = await Astro.callAction(actions.getProductsByPage, ({
+  page: pageParam
+}) );
 
 if (error){
   return Astro.redirect('/')
 }
-
 const { products, totalPages } = data;
 
+if (products.length === 0){
+  return Astro.redirect(`/?page=${totalPages}`)
+}
 ---
 
 <MainLayout>

@@ -33,7 +33,7 @@ export const getProductsByPage = defineAction({
         LIMIT ${limit} OFFSET ${(page -1) * limit};`
 
         const { rows } = await db.run(productsQuery);
-        console.log(rows);
+        // console.log(rows);
 
         // const products = await db
         //     .select()

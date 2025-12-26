@@ -1,0 +1,136 @@
+---
+import ProductSlideshow from "@/components/products/ProductSlideshow.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
+import { actions } from "astro:actions";
+import "@/styles/global.css";
+const { slug } = Astro.params;
+const { data, error } = await Astro.callAction(
+  actions.getProductBySlug,
+  slug ?? "",
+);
+
+if (error) {
+  return Astro.redirect("/404");
+}
+const { product, images } = data;
+---
+
+<MainLayout title={product.title} description={product.description}>
+  <h1 class="text-3xl font-bold mb-4">{product.title}</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-8">
+    <ProductSlideshow images={images} />
+
+    <section>
+      <h2 class="text-2xl font-bold">{product.title}</h2>
+      <h2 class="font-bold text-xl">${product.price}</h2>
+
+      <h3 class="mt-5 font-bold">Tallas</h3>
+      <ul class="flex gap-3">
+        {
+          product.sizes.split(",").map((size) => (
+            <li
+              data-size={size}
+              class="hover:underline cursor-pointer transition-all"
+            >
+              {size}
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3 class="mt-5 font-bold">Cantidad</h3>
+      <div class="flex items-center">
+        <button
+          class="w-10 text-center p-2 border border-gray-300 hover:bg-gray-100 cursor-pointer"
+        >
+          -
+        </button>
+        <input
+          id="quantityInput"
+          type="number"
+          min="1"
+          value="1"
+          class="w-16 text-center p-2 border-t border-b border-gray-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        />
+        <button
+          class="w-10 text-center p-2 border border-gray-300 hover:bg-gray-100 cursor-pointer"
+        >
+          +
+        </button>
+      </div>
+
+      <button
+        class="mt-5 bg-blue-500 hover:bg-blue-600 text-white p-3 w-full font-semibold transition-colors disabled:bg-gray-500"
+      >
+        Añadir al carrito
+      </button>
+
+      <h3 class="mt-10 font-bold">Descripción</h3>
+      <p class="text-gray-700">{product.description}</p>
+    </section>
+  </div>
+
+  <input type="hidden" id="product-id" value={product.id} />
+</MainLayout>
+
+<script>
+  import { CartCookiesClient } from "@/utils";
+  import { itemInCart } from "@/store/cart.store";
+  import { navigate } from "astro:transitions/client";
+
+  document.addEventListener('astro:page-load',() =>{
+    
+    const sizeElements = document.querySelectorAll("li[data-size]");
+    if(sizeElements.length === 0) return;
+    sizeElements.forEach((el) => {
+      el.addEventListener("click", () => {
+        sizeElements.forEach((sizeEl) =>
+          sizeEl.classList.remove("underline", "font-bold"),
+        );
+        el.classList.add("underline", "font-bold");
+      });
+    });
+    const quantityInput = document.querySelector(
+      "#quantityInput",
+    ) as HTMLInputElement;
+    const productIdInput = document.getElementById("product-id");
+    const [decrementBtn, incrementBtn, addToCartBtn] =
+      document.querySelectorAll("button");
+    let quantity = 1;
+  
+    if(!incrementBtn || !quantityInput) return;
+
+    incrementBtn.addEventListener("click", () => {
+      quantity = Math.min(quantity + 1, 5);
+      quantityInput.value = quantity.toString();
+    });
+  
+    decrementBtn.addEventListener("click", () => {
+      quantity = Math.max(quantity - 1, 1);
+      quantityInput.value = quantity.toString();
+    });
+  
+    addToCartBtn.addEventListener("click", () => {
+      const size = document.querySelector("li[data-size].underline")?.textContent;
+      if (!size) {
+        alert("Por favor selecciona una talla");
+        return;
+      }
+  
+      addToCartBtn.disabled = true;
+  
+      const cart = CartCookiesClient.addItem({
+        productId: productIdInput?.getAttribute("value") ?? "",
+        size,
+        quantity,
+      });
+  
+      itemInCart.set(cart.length);
+  
+      // TODO: cambiar luego cuando haya viewTransitions
+      navigate('/cart');
+    });
+  })
+
+</script>

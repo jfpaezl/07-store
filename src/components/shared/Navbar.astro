@@ -1,4 +1,5 @@
 ---
+import { CardCounter } from '@/components';
 const { isLoggedIn, isAdmin } = Astro.locals;
 ---
 
@@ -12,6 +13,9 @@ const { isLoggedIn, isAdmin } = Astro.locals;
   </h1>
   <div class="flex items-center">
     <ul class="flex items-center space-x-6">
+      <div class="pr-1">
+        <CardCounter client:load transition:persist/>
+      </div>
       <li class="font-semibold text-gray-700">
         <a href="/">Home</a>
       </li>
